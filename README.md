@@ -1,5 +1,8 @@
 # Submission untuk Technical Test
 
+Alamat repository: https://github.com/sigitwijk16/pokemon-app
+Alamat profile GitHub: https://github.com/sigitwijk16
+
 # Indonesia
 
 ## 1. How I approached the task
