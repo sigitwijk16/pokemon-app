@@ -1,36 +1,11 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Submission untuk Technical Test
 
-## Getting Started
+## Approach
 
-First, run the development server:
+Pertama-tama, saya memutuskan untuk menggunakan Next.js App Router untuk memanfaatkan teknologi SSR, dengan anggapan bahwa data pokemon dari server tidak terlalu sering update. Lalu saya menggunakan pnpm sebagai package manager yang disarankan oleh Next.js karena memang lebih cepat dan efisien (https://nextjs.org/learn/dashboard-app/getting-started).
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Lalu saya mulai membuat component SSR page.tsx untuk memuat 10 item pertama dari API https://pokeapi.co/api/v2/pokemon. Saya menyadari bahwa di api tersebut terdapat query offset dan limit yang bisa dimanfaatkan untuk pagination. Namun saya fokus untuk slicing komponen Card dengan props terlebih dahulu, lalu membuat container grid di page.tsx untuk menampilkan Card dalam jumlah yang responsive tergantung ukuran layar client. Untuk image karena tidak ada di response awal, maka saya investigasi untuk menemukan url image dan menemukan dari https://pokeapi.co/api/v2/pokemon/:id bahwa terdapat gambar dengan nama front_default dengan alamat "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/{id}.png", maka saya anggap bahwa terdapat gambar untuk setiap pokemon dengan base url yang sama, sehingga saya simpan
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Setelah itu saya menerapkan pagination untuk navigasi antar page pokemon dengan mengubah search param yang diberi nama page, lalu offset atau jumlah data yang diskip dihitung berdasarkan nilai (param page - 1 \* limit), sehingga elemen yang ditampilkan akan dimulai dari data diskip dan akan menampilkan data page saat ini. Teknik ini menghasilkan page SSR dan bisa dicache sehingga lebih cepat diakses client dan juga optimized untuk SEO, dengan revalidate diatur tiap 1 jam.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Setelah itu, pada langkah terakhir saya polish User Interface dengan menambahkan ThemeContext serta animasi magnet shear serta illumination dengan library framer-motion untuk theme light maupun dark. Dan library icon saya menggunakan lucide-react untuk efisiensi waktu.

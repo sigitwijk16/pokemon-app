@@ -21,7 +21,7 @@ async function getPokemonData(page: number, limit: number) {
   );
   const responseJson: PokemonApiResponse = await response.json();
 
-  const pokemonList = responseJson.results.map((pokemon) => {
+  const pokemonList: PokemonData[] = responseJson.results.map((pokemon) => {
     const id = pokemon.url.split("/")[6];
     const imageUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`;
     return { id, name: pokemon.name, imageUrl };
