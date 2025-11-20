@@ -5,6 +5,8 @@ Alamat repository: https://github.com/sigitwijk16/pokemon-app
 Alamat profile GitHub: https://github.com/sigitwijk16
 <br>
 Alamat deploy: https://pokemon-sigitwijk.netlify.app/
+<br>
+Alamat staged update: https://pokemon-staged.netlify.app/
 
 # Indonesia
 
