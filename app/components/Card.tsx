@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, memo } from "react";
 import {
   motion,
   useMotionTemplate,
@@ -11,7 +11,7 @@ import Image from "next/image";
 import { useTheme } from "@/app/context/ThemeContext";
 import type { PokemonData } from "@/app/lib/types";
 
-export default function Card({ name, imageUrl }: PokemonData) {
+const Card = memo(function Card({ name, imageUrl }: PokemonData) {
   const cardRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
   const isLight = theme === "light";
@@ -24,7 +24,7 @@ export default function Card({ name, imageUrl }: PokemonData) {
       shadow: "139, 105, 20",
       border: "#b8860b",
       textColor: "text-[#2b1d0e]",
-      innerCardBg: "bg-[#f2e4d5] border-[#8b6914]"
+      innerCardBg: "bg-[#f2e4d5] border-[#b8860b]"
     }
     : {
       glow1: "100, 180, 255",
@@ -77,6 +77,7 @@ export default function Card({ name, imageUrl }: PokemonData) {
     <motion.div
       ref={cardRef}
       className="relative aspect-4/5 w-full rounded-xl p-4 border-2 cursor-pointer"
+      aria-label={`Pokemon card for ${name}`}
       style={{
         background,
         rotateX,
@@ -109,9 +110,13 @@ export default function Card({ name, imageUrl }: PokemonData) {
             width={200}
             height={200}
             className="w-full h-auto object-contain drop-shadow-xl"
+            priority={false}
+            loading="lazy"
           />
         </div>
       </div>
     </motion.div>
   );
-}
+});
+
+export default Card;

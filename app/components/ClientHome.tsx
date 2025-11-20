@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 import { ChevronLeft, ChevronRight, AlertCircle, RefreshCcw } from "lucide-react";
 import Link from "next/link";
 import Card from "@/app/components/Card";
@@ -54,6 +54,19 @@ export default function ClientHome({
       ? "pointer-events-none opacity-40"
       : "hover:scale-105 active:scale-95 cursor-pointer"
     }`;
+
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft" && hasPrevious) {
+        window.location.href = `?page=${page - 1}`;
+      } else if (e.key === "ArrowRight" && hasNext) {
+        window.location.href = `?page=${page + 1}`;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
+  }, [page, hasNext, hasPrevious]);
 
   return (
     <>
@@ -115,6 +128,7 @@ export default function ClientHome({
                 aria-disabled={!hasNext}
                 className={getButtonClass(!hasNext)}
                 style={styles.button}
+                prefetch={true}
               >
                 Next <ChevronRight size={18} />
               </Link>

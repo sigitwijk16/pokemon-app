@@ -12,7 +12,10 @@ export async function getPokemonData(
 
     const response = await fetch(
       `${POKE_API_BASE}?offset=${offset}&limit=${limit}`,
-      { next: { revalidate: 3600 } }
+      {
+        next: { revalidate: 3600 },
+        cache: "force-cache"
+      }
     );
 
     if (!response.ok) {
@@ -28,7 +31,7 @@ export async function getPokemonData(
       return {
         id,
         name: pokemon.name,
-        imageUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${id}.png`
+        imageUrl: `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`
       };
     });
 
