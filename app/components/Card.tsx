@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { motion, useMotionTemplate, useMotionValue, useSpring } from "framer-motion";
 import Image from "next/image";
 import { useTheme } from "@/app/context/ThemeContext";
-import type { PokemonData } from "@/app/page";
+import type { PokemonData } from "@/app/lib/types";
 
 export default function Card({ name, imageUrl }: PokemonData) {
   const cardRef = useRef<HTMLDivElement>(null);
