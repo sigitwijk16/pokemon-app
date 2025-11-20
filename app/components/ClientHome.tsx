@@ -26,28 +26,27 @@ export default function ClientHome({
   error,
 }: ClientHomeProps) {
   const { theme } = useTheme();
-  const isLight = theme === "light";
 
   const styles = useMemo(() => ({
     container: {
-      backgroundColor: isLight ? "#f1e9d2" : "#1a202c",
+      backgroundColor: 'var(--bg-primary)',
       fontFamily: "var(--font-grotesk)",
       backgroundImage: "url('/texture/paper.png')",
       backgroundSize: "128px 128px",
       backgroundBlendMode: "multiply" as const,
     },
-    text: { color: isLight ? "#2b1d0e" : "#f7fafc" },
+    text: { color: 'var(--text-primary)' },
     button: {
-      borderColor: isLight ? "#8b6914" : "#4a5568",
-      backgroundColor: isLight ? "#fffaf0" : "#2d3748",
-      color: isLight ? "#2b1d0e" : "#f7fafc",
+      borderColor: 'var(--border-primary)',
+      backgroundColor: 'var(--button-bg)',
+      color: 'var(--text-primary)',
     },
     errorBox: {
-      backgroundColor: isLight ? "rgba(220, 38, 38, 0.1)" : "rgba(248, 113, 113, 0.1)",
-      borderColor: isLight ? "#dc2626" : "#f87171",
-      color: isLight ? "#991b1b" : "#fca5a5",
+      backgroundColor: 'var(--error-bg)',
+      borderColor: 'var(--error-border)',
+      color: 'var(--error-text)',
     }
-  }), [isLight]);
+  }), []);
 
   const getButtonClass = (isDisabled: boolean) =>
     `flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium transition-all duration-200 border-2 ${isDisabled
@@ -74,10 +73,15 @@ export default function ClientHome({
       <div
         className="flex min-h-screen items-center justify-center transition-colors duration-300"
         style={styles.container}
+        suppressHydrationWarning
       >
         <main className="flex min-h-screen w-full flex-col items-center justify-between py-4 px-4 md:px-16 lg:px-36">
 
-          <h1 className="text-2xl font-bold mb-2 transition-colors" style={styles.text}>
+          <h1
+            className="text-2xl font-bold mb-2 transition-colors"
+            style={styles.text}
+            suppressHydrationWarning
+          >
             Pokémon Cards
           </h1>
 
@@ -86,6 +90,7 @@ export default function ClientHome({
               <div
                 className="flex flex-col items-center gap-3 p-8 rounded-xl border-2 text-center max-w-md"
                 style={styles.errorBox}
+                suppressHydrationWarning
               >
                 <AlertCircle size={48} />
                 <h2 className="text-xl font-bold">Unable to load data</h2>
@@ -94,6 +99,7 @@ export default function ClientHome({
                   onClick={() => window.location.reload()}
                   className={getButtonClass(false)}
                   style={styles.button}
+                  suppressHydrationWarning
                 >
                   <RefreshCcw size={18} /> Try Again
                 </button>
@@ -115,11 +121,16 @@ export default function ClientHome({
                 aria-disabled={!hasPrevious}
                 className={getButtonClass(!hasPrevious)}
                 style={styles.button}
+                suppressHydrationWarning
               >
                 <ChevronLeft size={18} /> Prev
               </Link>
 
-              <span className="text-sm font-medium px-4" style={styles.text}>
+              <span
+                className="text-sm font-medium px-4"
+                style={styles.text}
+                suppressHydrationWarning
+              >
                 Page {page} of {totalPages}
               </span>
 
@@ -129,6 +140,7 @@ export default function ClientHome({
                 className={getButtonClass(!hasNext)}
                 style={styles.button}
                 prefetch={true}
+                suppressHydrationWarning
               >
                 Next <ChevronRight size={18} />
               </Link>

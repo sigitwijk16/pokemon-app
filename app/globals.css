@@ -3,14 +3,10 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-geist-sans: "Geist", sans-serif;
+  --font-geist-mono: "Geist Mono", monospace;
+  --font-grotesk: "Space Grotesk", sans-serif;
   box-sizing: border-box;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -24,4 +20,57 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+:root[data-theme="light"] {
+  --bg-primary: #f1e9d2;
+  --bg-card: #fffaf0;
+  --bg-inner-card: #f2e4d5;
+  --text-primary: #2b1d0e;
+  --text-secondary: #2b1d0e;
+  --border-primary: #8b6914;
+  --border-card: #b8860b;
+  --shadow-color: 139, 105, 20;
+  --glow-1: 255, 255, 255;
+  --glow-2: 250, 250, 250;
+  --card-base: #d4a574;
+  --button-bg: #fffaf0;
+  --toggle-bg: #ffdbb6;
+  --toggle-hover: #ffcf9f;
+  --error-bg: rgba(220, 38, 38, 0.1);
+  --error-border: #dc2626;
+  --error-text: #991b1b;
+}
+
+:root[data-theme="dark"] {
+  --bg-primary: #1a202c;
+  --bg-card: #2d3748;
+  --bg-inner-card: #232d3c;
+  --text-primary: #f7fafc;
+  --text-secondary: #f7fafc;
+  --border-primary: #4a5568;
+  --border-card: #4a5568;
+  --shadow-color: 100, 150, 255;
+  --glow-1: 100, 180, 255;
+  --glow-2: 80, 120, 200;
+  --card-base: #2d3748;
+  --button-bg: #2d3748;
+  --toggle-bg: #2d3748;
+  --toggle-hover: #3d4758;
+  --error-bg: rgba(248, 113, 113, 0.1);
+  --error-border: #f87171;
+  --error-text: #fca5a5;
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  padding: 0;
 }

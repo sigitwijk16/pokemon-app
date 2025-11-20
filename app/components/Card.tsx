@@ -16,25 +16,11 @@ const Card = memo(function Card({ name, imageUrl }: PokemonData) {
   const { theme } = useTheme();
   const isLight = theme === "light";
 
-  const styles = useMemo(() => isLight
-    ? {
-      glow1: "255, 255, 255",
-      glow2: "250, 250, 250",
-      base: "#d4a574",
-      shadow: "139, 105, 20",
-      border: "#b8860b",
-      textColor: "text-[#2b1d0e]",
-      innerCardBg: "bg-[#f2e4d5] border-[#b8860b]"
-    }
-    : {
-      glow1: "100, 180, 255",
-      glow2: "80, 120, 200",
-      base: "#2d3748",
-      shadow: "100, 150, 255",
-      border: "#4a5568",
-      textColor: "text-gray-50",
-      innerCardBg: "bg-[#232d3c] border-[#4a5568]"
-    }, [isLight]);
+  const styles = useMemo(() => ({
+    boxShadow: isLight
+      ? "0 20px 40px rgba(139, 105, 20, 0.3), 0 0 60px rgba(139, 105, 20, 0.15)"
+      : "0 20px 40px rgba(100, 150, 255, 0.3), 0 0 60px rgba(100, 150, 255, 0.15)"
+  }), [isLight]);
 
   const mouseX = useMotionValue(50);
   const mouseY = useMotionValue(50);
@@ -46,9 +32,9 @@ const Card = memo(function Card({ name, imageUrl }: PokemonData) {
   const background = useMotionTemplate`
     radial-gradient(
       150px circle at ${mouseX}% ${mouseY}%,
-      rgba(${styles.glow1}, ${isLight ? 0.5 : 0.5}),
-      rgba(${styles.glow2}, ${isLight ? 0.3 : 0.5}) 25%,
-      ${styles.base} 75%
+      rgba(var(--glow-1), ${isLight ? 0.5 : 0.5}),
+      rgba(var(--glow-2), ${isLight ? 0.3 : 0.5}) 25%,
+      var(--card-base) 75%
     )
   `;
 
@@ -82,12 +68,15 @@ const Card = memo(function Card({ name, imageUrl }: PokemonData) {
         background,
         rotateX,
         rotateY,
-        borderColor: styles.border,
+        borderTopColor: 'var(--border-card)',
+        borderRightColor: 'var(--border-card)',
+        borderBottomColor: 'var(--border-card)',
+        borderLeftColor: 'var(--border-card)',
         transformStyle: "preserve-3d",
       }}
       whileHover={{
         scale: 1.05,
-        boxShadow: `0 20px 40px rgba(${styles.shadow}, 0.3), 0 0 60px rgba(${styles.shadow}, 0.15)`,
+        boxShadow: styles.boxShadow,
         zIndex: 10
       }}
       onMouseMove={handleMouseMove}
@@ -97,12 +86,24 @@ const Card = memo(function Card({ name, imageUrl }: PokemonData) {
         style={{ transform: "translateZ(50px)" }}
         className="h-full flex flex-col justify-between pointer-events-none"
       >
-        <h2 className={`text-xl font-bold capitalize mb-2 ${styles.textColor}`}>
+        <h2
+          className="text-xl font-bold capitalize mb-2"
+          style={{ color: 'var(--text-primary)' }}
+          suppressHydrationWarning
+        >
           {name}
         </h2>
 
         <div
-          className={`relative grow flex items-center justify-center rounded-2xl border-2 p-4 transition-colors ${styles.innerCardBg}`}
+          className="relative grow flex items-center justify-center rounded-2xl border-2 p-4 transition-colors"
+          style={{
+            backgroundColor: 'var(--bg-inner-card)',
+            borderTopColor: 'var(--border-card)',
+            borderRightColor: 'var(--border-card)',
+            borderBottomColor: 'var(--border-card)',
+            borderLeftColor: 'var(--border-card)',
+          }}
+          suppressHydrationWarning
         >
           <Image
             src={imageUrl}
