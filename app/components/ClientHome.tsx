@@ -1,11 +1,12 @@
 "use client";
 
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useMemo } from "react";
+import { ChevronLeft, ChevronRight, AlertCircle, RefreshCcw } from "lucide-react";
 import Link from "next/link";
 import Card from "@/app/components/Card";
 import ThemeToggle from "@/app/components/ThemeToggle";
 import { useTheme } from "@/app/context/ThemeContext";
-import type { PokemonData } from "@/app/page";
+import type { PokemonData } from "@/app/lib/types";
 
 interface ClientHomeProps {
   pokemonData: PokemonData[];
@@ -13,7 +14,7 @@ interface ClientHomeProps {
   totalPages: number;
   hasNext: boolean;
   hasPrevious: boolean;
-  limit: number;
+  error?: string;
 }
 
 export default function ClientHome({
@@ -22,94 +23,102 @@ export default function ClientHome({
   totalPages,
   hasNext,
   hasPrevious,
+  error,
 }: ClientHomeProps) {
   const { theme } = useTheme();
   const isLight = theme === "light";
 
-  const styles = {
-    bg: isLight ? "#f1e9d2" : "#1a202c",
-    text: isLight ? "#2b1d0e" : "#f7fafc",
-    border: isLight ? "#8b6914" : "#4a5568",
-    btnBg: isLight ? "#fffaf0" : "#2d3748",
-    btnHover: isLight ? "#fff5e6" : "#3d4758",
-    btnText: isLight ? "#2b1d0e" : "#f7fafc",
-  };
+  const styles = useMemo(() => ({
+    container: {
+      backgroundColor: isLight ? "#f1e9d2" : "#1a202c",
+      fontFamily: "var(--font-grotesk)",
+      backgroundImage: "url('/texture/paper.png')",
+      backgroundSize: "128px 128px",
+      backgroundBlendMode: "multiply" as const,
+    },
+    text: { color: isLight ? "#2b1d0e" : "#f7fafc" },
+    button: {
+      borderColor: isLight ? "#8b6914" : "#4a5568",
+      backgroundColor: isLight ? "#fffaf0" : "#2d3748",
+      color: isLight ? "#2b1d0e" : "#f7fafc",
+    },
+    errorBox: {
+      backgroundColor: isLight ? "rgba(220, 38, 38, 0.1)" : "rgba(248, 113, 113, 0.1)",
+      borderColor: isLight ? "#dc2626" : "#f87171",
+      color: isLight ? "#991b1b" : "#fca5a5",
+    }
+  }), [isLight]);
+
+  const getButtonClass = (isDisabled: boolean) =>
+    `flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium transition-all duration-200 border-2 ${isDisabled
+      ? "pointer-events-none opacity-40"
+      : "hover:scale-105 active:scale-95 cursor-pointer"
+    }`;
 
   return (
     <>
       <ThemeToggle />
       <div
         className="flex min-h-screen items-center justify-center transition-colors duration-300"
-        style={{
-          backgroundColor: styles.bg,
-          fontFamily: "var(--font-grotesk)",
-          backgroundImage: "url('/texture/paper.png')",
-          backgroundSize: "128px 128px",
-          backgroundBlendMode: "multiply",
-        }}
+        style={styles.container}
       >
         <main className="flex min-h-screen w-full flex-col items-center justify-between py-4 px-4 md:px-16 lg:px-36">
-          <h1 className="text-2xl font-bold mb-2 transition-colors" style={{ color: styles.text }}>
+
+          <h1 className="text-2xl font-bold mb-2 transition-colors" style={styles.text}>
             Pokémon Cards
           </h1>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 w-full gap-4 h-fit">
-            {pokemonData.map((item) => (
-              <Card key={item.id} {...item} />
-            ))}
-          </div>
+          {error ? (
+            <div className="flex flex-col items-center justify-center w-full flex-1 h-96 gap-4">
+              <div
+                className="flex flex-col items-center gap-3 p-8 rounded-xl border-2 text-center max-w-md"
+                style={styles.errorBox}
+              >
+                <AlertCircle size={48} />
+                <h2 className="text-xl font-bold">Unable to load data</h2>
+                <p>{error}</p>
+                <button
+                  onClick={() => window.location.reload()}
+                  className={getButtonClass(false)}
+                  style={styles.button}
+                >
+                  <RefreshCcw size={18} /> Try Again
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 w-full gap-4 h-fit">
+              {pokemonData.map((item) => (
+                <Card key={item.id} {...item} />
+              ))}
+            </div>
+          )}
 
-          {pokemonData.length > 0 && (
+          {!error && pokemonData.length > 0 && (
             <div className="flex justify-center items-center gap-4 pt-2">
+
               <Link
                 href={`?page=${page - 1}`}
                 aria-disabled={!hasPrevious}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium transition-all duration-200 border-2 ${!hasPrevious
-                  ? "pointer-events-none opacity-40"
-                  : "hover:scale-105 active:scale-95"
-                  }`}
-                style={{
-                  borderColor: styles.border,
-                  backgroundColor: styles.btnBg,
-                  color: styles.btnText,
-                }}
-                onMouseEnter={(e) => {
-                  if (hasPrevious)
-                    e.currentTarget.style.backgroundColor = styles.btnHover;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = styles.btnBg;
-                }}
+                className={getButtonClass(!hasPrevious)}
+                style={styles.button}
               >
                 <ChevronLeft size={18} /> Prev
               </Link>
 
-              <span className="text-sm font-medium px-4" style={{ color: styles.text }}>
+              <span className="text-sm font-medium px-4" style={styles.text}>
                 Page {page} of {totalPages}
               </span>
 
               <Link
                 href={`?page=${page + 1}`}
                 aria-disabled={!hasNext}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-medium transition-all duration-200 border-2 ${!hasNext
-                  ? "pointer-events-none opacity-40"
-                  : "hover:scale-105 active:scale-95"
-                  }`}
-                style={{
-                  borderColor: styles.border,
-                  backgroundColor: styles.btnBg,
-                  color: styles.btnText,
-                }}
-                onMouseEnter={(e) => {
-                  if (hasNext)
-                    e.currentTarget.style.backgroundColor = styles.btnHover;
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = styles.btnBg;
-                }}
+                className={getButtonClass(!hasNext)}
+                style={styles.button}
               >
                 Next <ChevronRight size={18} />
               </Link>
+
             </div>
           )}
         </main>
